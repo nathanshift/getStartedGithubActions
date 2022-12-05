@@ -1,0 +1,2 @@
+# getStartedGithubActions
+exploring github actions.
