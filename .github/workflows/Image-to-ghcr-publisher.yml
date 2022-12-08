@@ -1,0 +1,29 @@
+name: publisher
+
+on: 
+  [push]
+
+jobs:
+  publish-runthedoc-docker-image:
+    if: "contains(github.event.head_commit.message, 'build and publish')"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v3
+
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Docker Image
+        run: | 
+          docker build . --tag ghcr.io/nathanshift/runthedockImage:latest
+          docker run ghcr.io/nathanshift/runthedockImage:latest
+          docker push ghcr.io/nathanshift/runthedockImage:latest
+      
